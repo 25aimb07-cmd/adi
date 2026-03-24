@@ -3,31 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
+    <title>Adithya S | Portfolio</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f9; }
-        .card { background: white; padding: 2rem; border-radius: 10px; shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px; text-align: center; border: 1px solid #ddd; }
-        h1 { color: #333; margin-bottom: 0.5rem; }
-        p { color: #666; line-height: 1.5; }
-        .skills { font-weight: bold; color: #007bff; margin-top: 1rem; }
+        body { 
+            margin: 0; font-family: 'Inter', sans-serif; 
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px;
+            padding: 30px; width: 100%; max-width: 500px; margin-bottom: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .view-badge {
+            background: rgba(0, 219, 222, 0.1); color: #00dbde;
+            padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: bold;
+            border: 1px solid rgba(0, 219, 222, 0.3); display: inline-block; margin-bottom: 15px;
+        }
+        h1 { font-size: 2.8rem; margin: 10px 0; background: linear-gradient(90deg, #00dbde, #fc00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 20px 0; }
+        .skill { background: rgba(255,255,255,0.08); padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.1); }
+        .project-item { border-left: 3px solid #00dbde; padding-left: 15px; margin: 15px 0; text-align: left; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; box-sizing: border-box; }
+        button { width: 100%; background: linear-gradient(90deg, #00dbde, #fc00ff); border: none; padding: 14px; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .links a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; margin: 0 10px; transition: 0.3s; }
+        .links a:hover { color: #fff; text-shadow: 0 0 10px #fff; }
     </style>
 </head>
 <body>
-    <div class="card" id="portfolio">
-        <h1 id="userName">Loading...</h1>
-        <p id="userAbout"></p>
-        <div class="skills" id="userSkills"></div>
+
+    <div class="glass">
+        <div class="view-badge">📈 Total Views: <span id="viewCount">0</span></div>
+        <h1 id="name">Adithya S</h1>
+        <p style="color: #94a3b8;" id="about">Second Sem Bsc AIML Student</p>
+        <div class="skills-grid" id="skills"></div>
+        <div class="links">
+            <a href="mailto:adithya4879@gmail.com">Email</a> • 
+            <a href="tel:7619301852">Call</a> • 
+            <a href="https://www.linkedin.com/in/adithya-s-13b7b3382" target="_blank">LinkedIn</a>
+        </div>
+    </div>
+
+    <div class="glass">
+        <h2 style="margin-top:0; color: #fc00ff;">Upcoming Projects</h2>
+        <div class="project-item">
+            <strong style="color: #00dbde;">AI Chatbot System</strong>
+            <p style="font-size: 0.9rem; margin: 5px 0;">Integrating LLMs with custom datasets for academic research.</p>
+        </div>
+        <div class="project-item">
+            <strong style="color: #00dbde;">Fullstack Dashboard</strong>
+            <p style="font-size: 0.9rem; margin: 5px 0;">Advanced data visualization using Node.js and TiDB Cloud.</p>
+        </div>
+    </div>
+
+    <div class="glass">
+        <h3 style="margin-top:0">Send a Message</h3>
+        <form id="msgForm">
+            <input type="text" id="mName" placeholder="Your Name" required>
+            <textarea id="mContent" placeholder="Your Message..." rows="3" required></textarea>
+            <button type="submit">Deploy Message</button>
+        </form>
+        <p id="status" style="font-size: 0.8rem; margin-top: 10px; color: #00dbde;"></p>
     </div>
 
     <script>
-        // This script asks your server for the data
+        // Fetch and Update
         fetch('/data')
-            .then(res => res.json())
+            .then(r => r.json())
             .then(data => {
-                document.getElementById('userName').innerText = data.name;
-                document.getElementById('userAbout').innerText = data.about;
-                document.getElementById('userSkills').innerText = "Skills: " + data.skills;
+                document.getElementById('name').innerText = data.name;
+                document.getElementById('about').innerText = data.about;
+                document.getElementById('viewCount').innerText = data.views;
+                
+                const sContainer = document.getElementById('skills');
+                sContainer.innerHTML = ''; 
+                data.skills.split(',').forEach(s => {
+                    const div = document.createElement('div');
+                    div.className = 'skill';
+                    div.innerText = s.trim();
+                    sContainer.appendChild(div);
+                });
             });
+
+        // Form Submission
+        document.getElementById('msgForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const res = await fetch('/message', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: document.getElementById('mName').value,
+                    message: document.getElementById('mContent').value
+                })
+            });
+            if(res.ok) {
+                document.getElementById('status').innerText = "✅ Message pushed to TiDB Cloud!";
+                document.getElementById('msgForm').reset();
+            }
+        };
     </script>
 </body>
 </html>
