@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f9; }
+        .card { background: white; padding: 2rem; border-radius: 10px; shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px; text-align: center; border: 1px solid #ddd; }
+        h1 { color: #333; margin-bottom: 0.5rem; }
+        p { color: #666; line-height: 1.5; }
+        .skills { font-weight: bold; color: #007bff; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="card" id="portfolio">
+        <h1 id="userName">Loading...</h1>
+        <p id="userAbout"></p>
+        <div class="skills" id="userSkills"></div>
+    </div>
+
+    <script>
+        // This script asks your server for the data
+        fetch('/data')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('userName').innerText = data.name;
+                document.getElementById('userAbout').innerText = data.about;
+                document.getElementById('userSkills').innerText = "Skills: " + data.skills;
+            });
+    </script>
+</body>
+</html>
