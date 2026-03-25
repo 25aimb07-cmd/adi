@@ -4,8 +4,11 @@ const mysql = require('mysql2');
 const path = require('path');
 const app = express();
 
-// This allows the server to read the data from your contact form
+// 1. Critical: This allows the server to read the data from your contact form
 app.use(express.json());
+
+// 2. Critical: This makes your 'folder' accessible so 'adi.jpeg' shows up
+app.use(express.static('folder'));
 
 // Database Connection
 const db = mysql.createConnection({
